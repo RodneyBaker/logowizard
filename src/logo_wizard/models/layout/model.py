@@ -58,6 +58,11 @@ class LayoutModel(nn.Module):
             norm_first=True,
         )
         self.out = nn.Linear(d, vocab.size)
+        # Font and palette logits also get a score per tag they carry (mood, class, family),
+        # so seeing a few horror fonts teaches the model about all of them.
+        tag_matrix = torch.from_numpy(vocab.tag_matrix())
+        self.register_buffer("tag_matrix", tag_matrix, persistent=False)
+        self.tag_out = nn.Linear(d, tag_matrix.shape[1], bias=False) if tag_matrix.shape[1] else None
         self.register_buffer("field_mask", torch.from_numpy(vocab.field_mask()), persistent=False)
         causal = torch.triu(torch.full((vocab.length, vocab.length), float("-inf")), diagonal=1)
         self.register_buffer("causal", causal, persistent=False)
@@ -72,7 +77,10 @@ class LayoutModel(nn.Module):
         pos = torch.arange(T, device=tgt_in.device)
         t = self.tgt_embed(tgt_in) * math.sqrt(self.config.d_model) + self.tgt_pos(pos)
         h = self.transformer.decoder(t, memory, tgt_mask=self.causal[:T, :T], memory_key_padding_mask=src == PAD)
-        return self.out(h).masked_fill(~self.field_mask[:T], float("-inf"))
+        logits = self.out(h)
+        if self.tag_out is not None:
+            logits = logits + self.tag_out(h) @ self.tag_matrix.T
+        return logits.masked_fill(~self.field_mask[:T], float("-inf"))
 
     def forward(self, src: torch.Tensor, tgt_in: torch.Tensor) -> torch.Tensor:
         """src (B, S) char ids; tgt_in (B, T) = BOS + the first T-1 field tokens. Returns masked logits (B, T, V)."""

@@ -6,7 +6,8 @@ from logo_wizard.models.layout.model import PRESETS, LayoutConfig, LayoutModel
 from logo_wizard.models.layout.tokens import BOS, EOS, SpecVocab, encode_text
 from logo_wizard.render.spec import DesignSpec
 
-VOCAB = SpecVocab(["bangers-400", "cinzel-400", "rye-400"], ["classic-hero", "antique-gold"])
+TAGS = {"rye-400": ["mood:western"], "cinzel-400": ["mood:fantasy"], "antique-gold": ["mood:western", "family:novel"]}
+VOCAB = SpecVocab(["bangers-400", "cinzel-400", "rye-400"], ["classic-hero", "antique-gold"], TAGS)
 
 
 def test_spec_tokens_round_trip_through_the_bins():
@@ -20,6 +21,16 @@ def test_spec_tokens_round_trip_through_the_bins():
     assert back.outlines == [3.5, 5.5] and back.warp == "arch" and back.warp_amount == 0.65
     assert back.tilt == -4.0 and back.inline and back.texture == "aged"
     assert VOCAB.encode(back) == ids
+
+
+def test_tags_reach_fonts_palettes_and_model_input():
+    matrix = VOCAB.tag_matrix()  # columns: family:novel, mood:fantasy, mood:western
+    font, palette, sub = (VOCAB.offsets[VOCAB.index[f]] for f in ("font", "palette", "subtitle_font"))
+    assert matrix[font + 2].tolist() == [0, 0, 1] and matrix[palette + 1].tolist() == [1, 0, 1]
+    assert matrix[sub + 1 + 1].tolist() == [0, 1, 0]  # subtitle_font starts with "none"
+    assert matrix.sum() == 2 + 2 + 2 and SpecVocab.from_dict(VOCAB.to_dict()).tags == TAGS
+    # Moods and style read from the words come first, as their own tokens.
+    assert encode_text("Outlaws", "western comic")[1:3] != encode_text("Outlaws", "")[1:3]
 
 
 def test_every_token_sits_in_its_field_block():
