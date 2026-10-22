@@ -1,0 +1,28 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: System libraries for skia-python
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libgl1
+      - name: Install
+        run: pip install -e ".[app,dev]"
+      - name: Cache fonts
+        uses: actions/cache@v4
+        with:
+          path: local/fonts
+          key: fonts-${{ hashFiles('data/fonts/manifest.csv') }}
+      - name: Fonts
+        run: logo-wizard-fonts
+      - name: Tests (PyTorch tests are skipped without the train extras)
+        run: pytest -q

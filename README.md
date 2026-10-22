@@ -9,7 +9,7 @@ A local Windows app that turns text into comic-book and novel-cover style title 
 
 Target hardware: Windows, NVIDIA GTX 1080 (8 GB), 16 GB RAM. Runs without a GPU using the plain render.
 
-See `docs/design-plan.md` for the full plan.
+To install the Windows app and train the models on your PC, follow [INSTALL.md](INSTALL.md). See `docs/design-plan.md` for the full plan and [CHANGELOG.md](CHANGELOG.md) for releases.
 
 ## Build the text corpus (milestone 1)
 

@@ -25,7 +25,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, Response
 from pydantic import BaseModel
 
-from .. import paths
+from .. import __version__, paths
 from ..render.draw import Renderer
 from ..render.grammar import read_style, sample_spec
 from ..render.spec import ARRANGEMENTS, CASES, FILL_MODES, TEXTURES, WARPS, DesignSpec
@@ -136,6 +136,7 @@ def create_app(renderer: Renderer | None = None, feedback_dir: Path = FEEDBACK_D
     def status() -> dict:
         layout, stylizer = models()
         return {
+            "version": __version__,
             "layout": getattr(layout, "name", None),
             "stylizer": getattr(stylizer, "name", None),
             "fonts": len(get_renderer().faces),
@@ -243,7 +244,7 @@ def main(argv: list[str] | None = None) -> int:
     if port != args.port:
         print(f"Port {args.port} is busy; using {port}.")
     url = f"http://{args.host}:{port}/"
-    print(f"Logo Wizard at {url}  (local files: {paths.LOCAL_ROOT})")
+    print(f"Logo Wizard {__version__} at {url}  (local files: {paths.LOCAL_ROOT})")
     if not args.no_browser:
         threading.Timer(1.5, lambda: webbrowser.open(url)).start()
     uvicorn.run(create_app(), host=args.host, port=port)
