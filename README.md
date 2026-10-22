@@ -33,3 +33,16 @@ logo-wizard-app                                    # local web app at http://127
 ```
 
 The renderer shapes text with HarfBuzz, bends the letter outlines (arch, valley, bulge, wave, perspective, fan, stagger), and draws drop shadows, 3D extrusion, stacked outlines, gradient or foil fills, an inline highlight, halftone dots and distressed or aged textures with Skia. The title grammar (`render/grammar.py`) reads moods from the title and style words (horror, sci-fi, western, fantasy, pulp...) and picks fonts, palettes, warps and effects to suit. This works on CPU with no trained model, and it is the same code that will generate the training data.
+
+## Synthetic dataset (milestone 3)
+
+Install Tesseract for the OCR check: the Windows installer from UB Mannheim (https://github.com/UB-Mannheim/tesseract/wiki), default folder `C:\Program Files\Tesseract-OCR`. Then:
+
+```
+pip install -e .[train]
+logo-wizard-synth --benchmark 100          # time per sample on this PC
+logo-wizard-synth --count 250000           # writes local/dataset (about 10 GB); safe to stop and re-run
+logo-wizard-synth --preview 64             # local/dataset/preview.png for a visual spot-check
+```
+
+Each sample is a 256x160 transparent PNG, its plain glyph mask and the spec that drew it, seeded by its index so the same command rebuilds the same set. Samples are dropped when Tesseract cannot read the title back (`--min-ocr`, character similarity, default 0.35), when the letter fill has too little contrast against its outlines (`--min-contrast`, WCAG ratio, default 1.5), or when a texture erased too much of the letters. Exact visual duplicates are listed in `duplicates.txt` and skipped by the loaders. With OCR on, a sample takes about 0.6 s of one core, so 250k attempts on 6 cores is roughly 7 hours; `--no-ocr` is about 10 times faster. Run `--benchmark` to measure it on your PC.
