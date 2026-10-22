@@ -27,7 +27,11 @@ from .common import RUNS_DIR, CsvLog, Deadline, cosine_lr, load_checkpoint, pick
 
 
 def build_vocab() -> SpecVocab:
-    return SpecVocab(sorted(load_manifest(require_files=False)), sorted(load_palettes()))
+    faces = load_manifest(require_files=False)
+    palettes = load_palettes()
+    tags = {k: [f"mood:{m}" for m in f.moods] + [f"class:{f.font_class}"] for k, f in faces.items()}
+    tags.update({k: [f"mood:{m}" for m in p.moods] + [f"family:{p.family}"] for k, p in palettes.items()})
+    return SpecVocab(sorted(faces), sorted(palettes), tags)
 
 
 def load_pairs(root: Path, vocab: SpecVocab) -> tuple[list[list[int]], np.ndarray]:

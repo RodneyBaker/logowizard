@@ -10,6 +10,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
+from ...render.grammar import MOOD_WORDS, read_moods, read_style
 from ...render.spec import ARRANGEMENTS, CASES, FILL_MODES, STYLES, TEXTURES, WARPS, DesignSpec
 
 PAD, BOS, EOS, UNK, SEP = 0, 1, 2, 3, 4
@@ -41,11 +42,17 @@ class Field:
 
 
 class SpecVocab:
-    """Field order and value lists. Built from the font manifest and palettes, saved with the model."""
+    """Field order and value lists. Built from the font manifest and palettes, saved with the model.
 
-    def __init__(self, fonts: list[str], palettes: list[str]):
+    tags maps a font or palette name to its descriptive tags (moods, font class,
+    palette family). The model shares what it learns about a tag across every
+    font or palette that carries it, instead of learning each one alone.
+    """
+
+    def __init__(self, fonts: list[str], palettes: list[str], tags: dict[str, list[str]] | None = None):
         self.fonts = list(fonts)
         self.palettes = list(palettes)
+        self.tags = {k: list(v) for k, v in (tags or {}).items()}
         self.fields = [
             Field("style", list(STYLES)),
             Field("font", self.fonts),
@@ -83,11 +90,23 @@ class SpecVocab:
         return len(self.fields)
 
     def to_dict(self) -> dict:
-        return {"fonts": self.fonts, "palettes": self.palettes}
+        return {"fonts": self.fonts, "palettes": self.palettes, "tags": self.tags}
 
     @classmethod
     def from_dict(cls, data: dict) -> "SpecVocab":
-        return cls(data["fonts"], data["palettes"])
+        return cls(data["fonts"], data["palettes"], data.get("tags"))
+
+    def tag_matrix(self) -> np.ndarray:
+        """(vocab, tags) 0/1: which tags each font and palette output id carries."""
+        names = sorted({t for v in self.tags.values() for t in v})
+        column = {t: j for j, t in enumerate(names)}
+        matrix = np.zeros((self.size, len(names)), dtype=np.float32)
+        for field in ("font", "palette", "subtitle_font"):
+            i = self.index[field]
+            for k, value in enumerate(self.fields[i].values):
+                for t in self.tags.get(value, []):
+                    matrix[self.offsets[i] + k, column[t]] = 1.0
+        return matrix
 
     def field_mask(self) -> np.ndarray:
         """(fields, vocab) boolean: which output ids each step may emit."""
@@ -160,13 +179,27 @@ class SpecVocab:
         )
 
 
+# Tags the title grammar reads from the words (moods like horror or western, and
+# comic or novel). Giving them to the model as tokens makes the link from words to
+# fonts and palettes easy to learn; the characters still carry everything else.
+TAGS = sorted(MOOD_WORDS) + list(STYLES)
+TAG_OFFSET = CHAR_OFFSET + len(CHARS)
+
+
+def text_tags(text: str, words: str = "") -> list[str]:
+    tags = read_moods(text, words)
+    style = read_style(words, default="")
+    return tags + [style] if style else tags
+
+
 def encode_text(text: str, words: str = "", max_len: int = MAX_TEXT) -> list[int]:
-    """Characters of 'style words | title' as input ids, BOS ... EOS."""
+    """Tags, then the characters of 'style words | title', as input ids: BOS ... EOS."""
     def chars(s: str) -> list[int]:
         return [CHAR_OFFSET + CHARS.index(c) if c in CHARS else UNK for c in s]
 
-    ids = [BOS] + chars(words.lower().strip()) + [SEP] + chars(text.strip())
+    tags = [TAG_OFFSET + TAGS.index(t) for t in text_tags(text, words) if t in TAGS]
+    ids = [BOS] + tags + chars(words.lower().strip()) + [SEP] + chars(text.strip())
     return ids[: max_len - 1] + [EOS]
 
 
-TEXT_VOCAB = CHAR_OFFSET + len(CHARS)
+TEXT_VOCAB = TAG_OFFSET + len(TAGS)
