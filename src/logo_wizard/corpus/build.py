@@ -35,13 +35,36 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
+# Grammar words and everyday verbs the dictionary also lists as nouns or
+# adjectives ("Will, n.", "Every, a.", "Make, n."); in a title slot they read as mistakes.
+FUNCTION_WORDS = set(
+    """
+    all also am an and any are as at be been but by can could did do does each either even ever every few
+    for from had has have he her here him his how if in into is it its let may me might more most much must
+    my neither no nor not now of off on once one only or other our out over own said same shall she should
+    so some such than that the thee their them then there these they thine this those thou thus thy to too
+    unto upon us very was we were what when where which while who whom whose why will with would ye yea yet
+    you your
+    come go make say put take know set give get see like pass bring seek hear cast cut deliver live
+    none many toward
+    """.split()
+)
+
+
 def pick_vocabulary(
     parts: dict[str, set[str]], usage: Counter, blocklist: set[str], min_usage: int = 2
 ) -> tuple[list[str], list[str]]:
     """Dictionary nouns and adjectives that are also in common use, most used first."""
 
     def keep(word: str) -> bool:
-        return 3 <= len(word) <= 12 and word.isalpha() and usage[word] >= min_usage and word not in blocklist
+        return (
+            3 <= len(word) <= 12
+            and word.isalpha()
+            and usage[word] >= min_usage
+            and word not in blocklist
+            and "function" not in parts[word]
+            and word not in FUNCTION_WORDS
+        )
 
     ranked = sorted(parts, key=lambda w: (-usage[w], w))
     nouns = [w.capitalize() for w in ranked if "noun" in parts[w] and keep(w)]

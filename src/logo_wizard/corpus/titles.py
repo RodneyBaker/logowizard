@@ -55,6 +55,11 @@ def title_case(text: str) -> str:
     return " ".join(out)
 
 
+def fix_articles(text: str) -> str:
+    """'A Adventuress' -> 'An Adventuress' after the slots are filled."""
+    return re.sub(r"\b(A|a) (?=[AEIOUaeiou])", lambda m: m.group(1) + "n ", text)
+
+
 @dataclass(frozen=True)
 class Phrase:
     text: str
@@ -94,6 +99,8 @@ def generate(words: WordLists, count: int, seed: int = 1890, real_titles: list[s
     phrases: list[Phrase] = []
 
     for title in real_titles or []:
+        # The catalog mixes "The war of the worlds" with "The War of the Worlds".
+        title = title_case(title)
         style = "novel"
         key = title.lower()
         if key not in seen:
@@ -117,7 +124,7 @@ def generate(words: WordLists, count: int, seed: int = 1890, real_titles: list[s
             hero=rng.choice(HERO_PREFIX),
             suffix=rng.choice(HERO_SUFFIX),
         )
-        text = re.sub(r"\s+", " ", title_case(text)).strip()
+        text = fix_articles(re.sub(r"\s+", " ", title_case(text)).strip())
         key = text.lower()
         if key in seen:
             continue
