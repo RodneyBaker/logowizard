@@ -46,3 +46,24 @@ logo-wizard-synth --preview 64             # local/dataset/preview.png for a vis
 ```
 
 Each sample is a 256x160 transparent PNG, its plain glyph mask and the spec that drew it, seeded by its index so the same command rebuilds the same set. Samples are dropped when Tesseract cannot read the title back (`--min-ocr`, character similarity, default 0.35), when the letter fill has too little contrast against its outlines (`--min-contrast`, WCAG ratio, default 1.5), or when a texture erased too much of the letters. Exact visual duplicates are listed in `duplicates.txt` and skipped by the loaders. With OCR on, a sample takes about 0.6 s of one core, so 250k attempts on 6 cores is roughly 7 hours; `--no-ocr` is about 10 times faster. Run `--benchmark` to measure it on your PC.
+
+## Layout model (milestone 4)
+
+Install the PyTorch build that still has kernels for the GTX 1080 (Pascal, sm_61) before the rest of the training extras. Newer CUDA 12.8+ builds dropped Pascal, so the project pins the CUDA 12.6 build:
+
+```
+pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cu126
+pip install -e .[train,app,dev]
+python scripts/check_gpu.py        # confirms the GPU works and measures fp32 speed, VRAM and step times
+```
+
+Then, once `local/dataset` exists:
+
+```
+logo-wizard-train-layout                      # about 17M parameters, batch 256, 12 epochs; resumable
+logo-wizard-train-layout --max-minutes 180    # stop after 3 hours, run the same command to carry on
+logo-wizard-layout-compare --n 40             # blind sheet: model vs hand-written rules
+logo-wizard-layout-compare --score A,B,A,...  # your picks, one per row
+```
+
+The model reads the style words and the title as characters and writes the spec one field at a time (style, font, palette, case, arrangement, warp, effects...). At each step it can only choose that field's values, so every output is a valid spec, and fonts or palettes missing on the machine are never proposed. Checkpoints and `log.csv` (loss and per-field accuracy each epoch) go to `local/runs/layout/`; the app loads `best.pt`. Training runs in fp32; the training loop saves on Ctrl+C.
