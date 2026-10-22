@@ -40,7 +40,7 @@ STYLE_WORDS = {
     "comic": "comic comics superhero hero heroes cartoon pulp",
     "novel": "novel book gothic romance literary classic victorian",
 }
-_MOOD_LOOKUP = {w: mood for mood, words in MOOD_WORDS.items() for w in words.split()}
+_MOOD_LOOKUP = {w: mood for mood, words in MOOD_WORDS.items() for w in words.split() + [mood]}
 _STYLE_LOOKUP = {w: style for style, words in STYLE_WORDS.items() for w in words.split()}
 
 
@@ -163,7 +163,8 @@ def sample_spec(
     if subtitle:
         plain = {k: v for k, v in faces.items() if v.font_class in ("serif", "sans", "slab")}
         spec.subtitle_font = pick_font(plain or faces, "novel", [], rng).face_id
-    if font.font_class in ("script", "hand", "blackletter") and rng.random() < 0.8:
+    if font.font_class in ("script", "blackletter") or (font.font_class == "hand" and rng.random() < 0.6):
+        # Capitals in a script or blackletter face are close to unreadable.
         spec.case = "title"
         spec.tracking = min(spec.tracking, 0.03)
     return spec
