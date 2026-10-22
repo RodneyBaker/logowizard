@@ -23,11 +23,11 @@ from pathlib import Path
 
 import uharfbuzz as hb
 
+from .. import paths
 from .catalog import FamilyEntry, unique_families
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-FONT_DIR = REPO_ROOT / "local" / "fonts"
-MANIFEST = REPO_ROOT / "data" / "fonts" / "manifest.csv"
+FONT_DIR = paths.LOCAL_ROOT / "fonts"
+MANIFEST = paths.FONT_MANIFEST
 
 BASE_URL = "https://raw.githubusercontent.com/google/fonts/main"
 LICENSE_DIRS = {"ofl": "OFL", "apache": "APACHE2", "ufl": "UFL"}

@@ -10,8 +10,9 @@ from pathlib import Path
 import numpy as np
 import torch
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-RUNS_DIR = REPO_ROOT / "local" / "runs"
+from .. import paths
+
+RUNS_DIR = paths.RUNS_DIR
 
 
 def pick_device(name: str = "auto") -> torch.device:

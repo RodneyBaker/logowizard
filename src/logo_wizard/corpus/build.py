@@ -10,15 +10,15 @@ import csv
 from collections import Counter
 from pathlib import Path
 
+from .. import paths
 from . import catalog, census, kjv, webster
 from .fetch import fetch_all
 from .gutenberg import strip_boilerplate
 from .sources import SOURCES
 from .titles import Phrase, WordLists, generate
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-RAW_DIR = REPO_ROOT / "local" / "raw"
-OUT_DIR = REPO_ROOT / "data" / "corpora"
+RAW_DIR = paths.RAW_DIR
+OUT_DIR = paths.CORPORA
 
 
 def load_blocklist(path: Path) -> set[str]:

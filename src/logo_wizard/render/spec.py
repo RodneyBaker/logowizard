@@ -13,8 +13,9 @@ from pathlib import Path
 
 import yaml
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-PALETTE_FILE = REPO_ROOT / "data" / "palettes" / "palettes.yaml"
+from .. import paths
+
+PALETTE_FILE = paths.PALETTES
 
 STYLES = ("comic", "novel")
 CASES = ("upper", "title")

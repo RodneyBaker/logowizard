@@ -80,3 +80,27 @@ logo-wizard-eval-stylizer --n 200                # OCR readability of stylized o
 Every 2,000 steps it saves `local/runs/stylizer/last.pt` (full state) and `ema.pt` (the smoothed weights the app uses); every 10,000 steps it writes `preview_<step>.png` with mask, stylized and target columns. `log.csv` records loss, samples per second and peak VRAM, which gives the measured hardware numbers for the plan. The milestone is done when `eval.json` shows `stylized_readable` above 0.95 and the sheet looks richer than the plain fill. For the 256x160 stretch goal: `--size 256x160 --batch-size 6 --run local/runs/stylizer-256`.
 
 At export the stylizer output is upscaled with a light sharpen, and letter interiors are re-cut from a full-size glyph mask so the shapes stay crisp.
+
+## The app, feedback and ONNX export (milestone 6)
+
+```
+logo-wizard-app                    # opens http://127.0.0.1:8765 (or the next free port)
+```
+
+The Create tab takes a title, optional style words ("western comic", "gothic novel") and an optional subtitle, and shows 12 candidates. "Ideas from" picks where they come from: the trained layout model, the hand-written rules, or a mix of both (the default when a model is found). Click a candidate to refine every field (font, palette, warp and amount, fill, outlines, 3D depth, shadow, halftone, tilt...), tick "Finish with the stylizer" for the diffusion finish, and export PNG at 512, 1024 or 2048 px wide, or the spec as JSON.
+
+Thumbs up and down, exports and Blind test picks are appended to `local/feedback/feedback.jsonl`. The Blind test tab shows one take from the model and one from the rules side by side, in random order, and keeps a running tally of how often the model wins. Once you have 20 or more votes:
+
+```
+logo-wizard-finetune-layout        # liked specs are trained toward, disliked ones pushed away
+```
+
+It keeps the previous weights as `best.before-feedback.pt`, so a bad round is one file rename to undo.
+
+To run the app without PyTorch (the Windows build does this), export the models to ONNX:
+
+```
+logo-wizard-export-onnx            # local/models/layout.onnx and stylizer.onnx, plus their .json configs
+```
+
+The app prefers `local/models/*.onnx` (onnxruntime, DirectML on Windows so the GTX 1080 is used) and falls back to the PyTorch checkpoints in `local/runs/`. Set `LOGO_WIZARD_HOME` to keep fonts, datasets, runs, models and feedback somewhere other than `local/`.

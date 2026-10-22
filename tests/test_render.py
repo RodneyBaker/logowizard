@@ -122,7 +122,7 @@ def test_app_generates_and_exports():
 
     from logo_wizard.app.server import create_app
 
-    client = TestClient(create_app())
+    client = TestClient(create_app(use_models=False))
     assert client.get("/").status_code == 200
     res = client.post("/api/generate", json={"text": "Star Patrol", "words": "sci-fi", "count": 2, "seed": 1})
     assert res.status_code == 200

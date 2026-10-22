@@ -5,12 +5,12 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from ... import paths
 from ...render.spec import DesignSpec
 from .model import LayoutModel
 from .tokens import encode_text
 
-REPO_ROOT = Path(__file__).resolve().parents[4]
-DEFAULT_WEIGHTS = REPO_ROOT / "local" / "runs" / "layout" / "best.pt"
+DEFAULT_WEIGHTS = paths.RUNS_DIR / "layout" / "best.pt"
 
 
 class LayoutPredictor:

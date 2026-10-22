@@ -30,13 +30,13 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+from .. import paths
 from ..render.draw import Renderer
 from ..render.grammar import sample_spec
 from . import filters
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-PHRASES = REPO_ROOT / "data" / "corpora" / "phrases.tsv"
-OUT_DIR = REPO_ROOT / "local" / "dataset"
+PHRASES = paths.PHRASES
+OUT_DIR = paths.DATASET_DIR
 SHARD_SIZE = 1000
 WIDTH, HEIGHT = 256, 160
 
