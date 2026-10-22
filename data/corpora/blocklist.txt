@@ -1,0 +1,20 @@
+# Words kept out of generated titles (one per line, lowercase). Extend as needed.
+whore
+whoredom
+whoredoms
+harlot
+harlots
+bastard
+bastards
+damn
+damned
+slave
+slaves
+concubine
+concubines
+eunuch
+eunuchs
+nakedness
+dung
+piss
+rape
