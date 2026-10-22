@@ -83,11 +83,15 @@ class LayoutModel(nn.Module):
         self,
         src: torch.Tensor,
         temperature: float = 1.0,
-        top_k: int = 0,
+        top_p: float = 1.0,
         allowed: torch.Tensor | None = None,
         generator: torch.Generator | None = None,
     ) -> torch.Tensor:
-        """Sample one spec per row of src. allowed (V,) bool can forbid ids, e.g. fonts not installed."""
+        """Sample one spec per row of src. allowed (V,) bool can forbid ids, e.g. fonts not installed.
+
+        Nucleus sampling rather than top-k: the font field has hundreds of
+        plausible values, and a fixed k would cut most of them off.
+        """
         B = src.shape[0]
         tokens = torch.full((B, 1), BOS, dtype=torch.long, device=src.device)
         memory = self.encode(src)
@@ -98,11 +102,13 @@ class LayoutModel(nn.Module):
             if temperature <= 0:
                 nxt = logits.argmax(-1)
             else:
-                logits = logits / temperature
-                if top_k:
-                    kth = torch.topk(logits, min(top_k, logits.shape[-1]), dim=-1).values[:, -1:]
-                    logits = logits.masked_fill(logits < kth, float("-inf"))
-                probs = torch.softmax(logits, -1)
+                probs = torch.softmax(logits / temperature, -1)
+                if top_p < 1.0:
+                    # Nucleus sampling: keep the most likely values that cover top_p of the mass.
+                    sorted_p, order = probs.sort(-1, descending=True)
+                    drop = sorted_p.cumsum(-1) - sorted_p > top_p
+                    probs = probs.scatter(-1, order, sorted_p.masked_fill(drop, 0.0))
+                    probs = probs / probs.sum(-1, keepdim=True)
                 nxt = torch.multinomial(probs, 1, generator=generator).squeeze(1)
             tokens = torch.cat([tokens, nxt[:, None]], dim=1)
         return tokens[:, 1:]

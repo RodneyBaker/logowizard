@@ -29,10 +29,10 @@ class LayoutPredictor:
                     allowed[vocab.offsets[i] + k] = False
         self.allowed = torch.from_numpy(allowed).to(self.device)
 
-    def suggest(self, text: str, words: str = "", subtitle: str = "", n: int = 8, temperature: float = 0.9, top_k: int = 12, seed: int | None = None) -> list[DesignSpec]:
+    def suggest(self, text: str, words: str = "", subtitle: str = "", n: int = 8, temperature: float = 1.0, top_p: float = 0.95, seed: int | None = None) -> list[DesignSpec]:
         src = torch.tensor([encode_text(text, words)] * n, dtype=torch.long, device=self.device)
         gen = torch.Generator(device=self.device)
         gen.manual_seed(seed if seed is not None else int(np.random.default_rng().integers(2**31)))
-        ids = self.model.sample(src, temperature=temperature, top_k=top_k, allowed=self.allowed, generator=gen)
+        ids = self.model.sample(src, temperature=temperature, top_p=top_p, allowed=self.allowed, generator=gen)
         seeds = np.random.default_rng(seed).integers(0, 2**31 - 1, size=n)
         return [self.model.vocab.decode(row.tolist(), text, subtitle, seed=int(s)) for row, s in zip(ids.cpu(), seeds)]
