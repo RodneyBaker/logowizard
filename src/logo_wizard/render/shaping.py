@@ -13,9 +13,10 @@ from pathlib import Path
 import numpy as np
 import uharfbuzz as hb
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-FONT_DIR = REPO_ROOT / "local" / "fonts"
-MANIFEST = REPO_ROOT / "data" / "fonts" / "manifest.csv"
+from .. import paths
+
+FONT_DIR = paths.FONT_DIR
+MANIFEST = paths.FONT_MANIFEST
 
 FONT_SIZE = 100.0
 CURVE_STEPS = 8

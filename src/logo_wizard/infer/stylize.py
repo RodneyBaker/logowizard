@@ -11,14 +11,14 @@ from pathlib import Path
 import numpy as np
 import torch
 
+from .. import paths
 from ..models.stylizer.diffusion import ddim_sample, spec_labels, to_rgba
 from ..models.stylizer.unet import UNet, UNetConfig
 from ..render.draw import Renderer
 from ..render.spec import DesignSpec
 from .upscale import upscale
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
-DEFAULT_WEIGHTS = REPO_ROOT / "local" / "runs" / "stylizer" / "ema.pt"
+DEFAULT_WEIGHTS = paths.RUNS_DIR / "stylizer" / "ema.pt"
 
 
 class Stylizer:

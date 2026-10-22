@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-train = ["torch>=2.4", "pytesseract"]
+train = ["torch>=2.4", "pytesseract", "onnx"]
 app = ["fastapi", "uvicorn", "onnxruntime"]
 dev = ["pytest", "httpx"]
 
@@ -26,6 +26,8 @@ logo-wizard-train-layout = "logo_wizard.train.layout:main"
 logo-wizard-layout-compare = "logo_wizard.train.compare_layout:main"
 logo-wizard-train-stylizer = "logo_wizard.train.stylizer:main"
 logo-wizard-eval-stylizer = "logo_wizard.train.eval_stylizer:main"
+logo-wizard-export-onnx = "logo_wizard.infer.onnx_export:main"
+logo-wizard-finetune-layout = "logo_wizard.train.finetune_layout:main"
 
 [build-system]
 requires = ["hatchling"]

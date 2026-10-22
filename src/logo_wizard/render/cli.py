@@ -16,11 +16,11 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+from .. import paths
 from .draw import Renderer, on_background
 from .grammar import read_style, sample_spec
 from .spec import DesignSpec
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 def contact_sheet(images: list[np.ndarray], columns: int = 4, background=None) -> Image.Image:
@@ -47,7 +47,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--size", default="768x512", help="WIDTHxHEIGHT in pixels")
     parser.add_argument("--seed", type=int, default=None)
     parser.add_argument("--spec", type=Path, help="render a saved spec JSON instead of sampling")
-    parser.add_argument("--out", type=Path, default=REPO_ROOT / "local" / "out")
+    parser.add_argument("--out", type=Path, default=paths.OUT_DIR)
     args = parser.parse_args(argv)
 
     width, height = parse_size(args.size)
