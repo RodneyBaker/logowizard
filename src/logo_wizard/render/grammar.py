@@ -41,6 +41,9 @@ STYLE_WORDS = {
     "novel": "novel book gothic romance literary classic victorian",
 }
 _MOOD_LOOKUP = {w: mood for mood, words in MOOD_WORDS.items() for w in words.split() + [mood]}
+# How much a font or palette tagged with the title's mood is favoured. Strong enough that
+# most picks fit the mood (and the layout model has a clear link to learn), with room for surprises.
+MOOD_BOOST = 12.0
 _STYLE_LOOKUP = {w: style for style, words in STYLE_WORDS.items() for w in words.split()}
 
 
@@ -74,7 +77,7 @@ def _score(tags: tuple[str, ...], style: str, moods: list[str]) -> float:
     score = 1.0 if style in tags else 0.15
     for m in moods:
         if m in tags:
-            score *= 4.0
+            score *= MOOD_BOOST
     return score
 
 
