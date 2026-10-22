@@ -6,7 +6,7 @@ from collections import Counter
 from logo_wizard.corpus import build, catalog, census, kjv, webster
 from logo_wizard.corpus.gutenberg import strip_boilerplate
 from logo_wizard.corpus.sources import SOURCES
-from logo_wizard.corpus.titles import WordLists, generate, title_case
+from logo_wizard.corpus.titles import WordLists, fix_articles, generate, title_case
 
 KJV_SAMPLE = """﻿The Project Gutenberg eBook of The King James Bible
 License text here.
@@ -40,6 +40,23 @@ Absence of light.
 SPAKE
 Spake, v. t.
 Old past tense of speak.
+
+FOR
+For, prep. Etym: [AS. for.]
+In the place of.
+
+FOR
+For, n.
+One who takes the affirmative side.
+
+THAT
+That, pron., a., conj., & adv.
+A demonstrative.
+
+WENT
+Went,
+
+Defn: imp. & p. p. of Wend.
 
 SEA SERPENT
 Sea serpent, n.
@@ -82,6 +99,9 @@ def test_webster_headwords_and_parts_of_speech():
     assert parts["dark"] == {"adjective", "noun"}
     assert parts["spake"] == {"verb"}
     assert "sea serpent" not in parts
+    assert parts["for"] == {"function", "noun"}
+    assert parts["that"] == {"function"}
+    assert parts["went"] == {"function"}
 
 
 def test_catalog_keeps_english_genre_text_titles_without_subtitles():
@@ -103,6 +123,11 @@ def test_census_parsers(tmp_path):
 
 def test_title_case():
     assert title_case("the sword of the dark river") == "The Sword of the Dark River"
+
+
+def test_fix_articles():
+    assert fix_articles("A Adventuress in Heber") == "An Adventuress in Heber"
+    assert fix_articles("A Sword in Babylon") == "A Sword in Babylon"
 
 
 def test_generate_is_unique_and_deterministic():
@@ -129,8 +154,15 @@ def test_generate_rejects_too_few_words():
 
 
 def test_pick_vocabulary_filters_rare_and_blocked_words():
-    parts = {"sword": {"noun"}, "dark": {"adjective", "noun"}, "zymurgy": {"noun"}, "harlot": {"noun"}}
-    usage = Counter({"sword": 10, "dark": 5, "harlot": 9, "zymurgy": 0})
+    parts = {
+        "sword": {"noun"},
+        "dark": {"adjective", "noun"},
+        "zymurgy": {"noun"},
+        "harlot": {"noun"},
+        "for": {"function", "noun"},
+        "will": {"verb", "noun"},
+    }
+    usage = Counter({"sword": 10, "dark": 5, "harlot": 9, "zymurgy": 0, "for": 99, "will": 50})
     nouns, adjectives = build.pick_vocabulary(parts, usage, blocklist={"harlot"})
     assert nouns == ["Sword", "Dark"]
     assert adjectives == ["Dark"]
