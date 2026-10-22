@@ -99,3 +99,13 @@ def test_free_port_skips_a_busy_port():
         s.listen()
         busy = s.getsockname()[1]
         assert free_port("127.0.0.1", busy) != busy
+
+
+def test_version_matches_pyproject(client):
+    import re
+
+    from logo_wizard import __version__, paths
+
+    pyproject = (paths.DATA_ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    assert re.search(r'^version = "(.+)"', pyproject, re.M).group(1) == __version__
+    assert client.get("/api/status").json()["version"] == __version__

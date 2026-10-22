@@ -1,6 +1,6 @@
 [project]
 name = "logo-wizard"
-version = "0.0.1"
+version = "0.1.0"
 description = "Local text-to-title-logo generator trained on synthetic data"
 requires-python = ">=3.11"
 dependencies = [
