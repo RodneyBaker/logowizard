@@ -1,0 +1,52 @@
+# Curated palettes for the title grammar.
+# Roles: fill (1 to 3 gradient stops, top to bottom), outlines (innermost first),
+# extrude (3D side), shadow, halftone (dot color), inline (thin inner highlight).
+# moods match the font catalog tags so the grammar can pair them.
+
+comic:
+  - {name: classic-hero, moods: [comic pulp], fill: ["#FFE135", "#FF9A00"], outlines: ["#D7261E", "#111111", "#FFFFFF"], extrude: "#8C1010", shadow: "#111111", halftone: "#D7261E", inline: "#FFF6B0"}
+  - {name: atomic-red, moods: [comic scifi pulp], fill: ["#FF3B30", "#B3001B"], outlines: ["#FFFFFF", "#111111", "#FFD600"], extrude: "#4A0010", shadow: "#000000", halftone: "#6B0012", inline: "#FFC2BD"}
+  - {name: cosmic-blue, moods: [comic scifi], fill: ["#7FE7FF", "#1E6BFF", "#2A1B8F"], outlines: ["#FFFFFF", "#0B0B2E", "#FF2E88"], extrude: "#0B0B2E", shadow: "#000000", halftone: "#0E2A80", inline: "#E6FBFF"}
+  - {name: toxic-green, moods: [comic horror scifi], fill: ["#C6FF3D", "#2DBD2D"], outlines: ["#1A1A1A", "#6A00A8", "#C6FF3D"], extrude: "#0F3D0F", shadow: "#000000", halftone: "#0F5D0F", inline: "#F2FFD0"}
+  - {name: blood-moon, moods: [comic horror], fill: ["#FF5A36", "#A00000", "#3A0000"], outlines: ["#000000", "#FFC800", "#000000"], extrude: "#200000", shadow: "#000000", halftone: "#2A0000", inline: "#FFB199"}
+  - {name: graveyard, moods: [comic horror], fill: ["#E8F5D0", "#8FB37A"], outlines: ["#1C1C1C", "#5B2A86", "#000000"], extrude: "#2A1640", shadow: "#000000", halftone: "#3A5530", inline: "#FFFFFF"}
+  - {name: sunset-pulp, moods: [comic pulp retro], fill: ["#FFD25A", "#FF6B3D", "#C2185B"], outlines: ["#2B0F3A", "#FFFFFF", "#2B0F3A"], extrude: "#2B0F3A", shadow: "#120515", halftone: "#7A0C3C", inline: "#FFF0C2"}
+  - {name: pop-magenta, moods: [comic playful retro], fill: ["#FF6EC7", "#C2007A"], outlines: ["#FFFFFF", "#1A0033", "#00E5FF"], extrude: "#4D0030", shadow: "#1A0033", halftone: "#7A004D", inline: "#FFE0F4"}
+  - {name: gold-rush, moods: [comic western retro], fill: ["#FFF1A8", "#E0A526", "#8A5A12"], outlines: ["#3B1F0A", "#F4E3C1", "#3B1F0A"], extrude: "#3B1F0A", shadow: "#1E0F05", halftone: "#6E4410", inline: "#FFFBE0"}
+  - {name: dusty-trail, moods: [comic western], fill: ["#F2C48D", "#C9743C"], outlines: ["#4A2410", "#F8E9D0"], extrude: "#4A2410", shadow: "#2A1408", halftone: "#7A3D18", inline: "#FFF4E2"}
+  - {name: steel-blue, moods: [comic pulp scifi], fill: ["#E3EEF7", "#8FA9C0", "#3E5873"], outlines: ["#0D1B2A", "#E63946", "#0D1B2A"], extrude: "#0D1B2A", shadow: "#000000", halftone: "#1B2F45", inline: "#FFFFFF"}
+  - {name: jungle, moods: [comic fantasy playful], fill: ["#FFE66D", "#4CAF50"], outlines: ["#1B4D1B", "#FFFFFF", "#1B4D1B"], extrude: "#0E2E0E", shadow: "#071807", halftone: "#2E6B2E", inline: "#FFFBD1"}
+  - {name: royal-purple, moods: [comic fantasy], fill: ["#E3B5FF", "#8E2DE2", "#4A00A0"], outlines: ["#FFD700", "#1A0033", "#FFFFFF"], extrude: "#1A0033", shadow: "#0A0014", halftone: "#2E005C", inline: "#F6E6FF"}
+  - {name: fire-and-ice, moods: [comic fantasy scifi], fill: ["#FFFFFF", "#8DE0FF", "#0077C8"], outlines: ["#FF5500", "#2A0A00", "#FFD000"], extrude: "#2A0A00", shadow: "#000000", halftone: "#004C80", inline: "#FFFFFF"}
+  - {name: newsprint, moods: [comic pulp retro], fill: ["#F5EBD5", "#E2CFA8"], outlines: ["#1A1A1A", "#C0392B"], extrude: "#1A1A1A", shadow: "#1A1A1A", halftone: "#7A6A55", inline: "#FFFFFF"}
+  - {name: bubblegum, moods: [comic playful], fill: ["#FFF27A", "#FFB3E6"], outlines: ["#FF3EA5", "#3A0CA3", "#FFFFFF"], extrude: "#3A0CA3", shadow: "#1C0652", halftone: "#C2187A", inline: "#FFFFFF"}
+  - {name: electric-lime, moods: [comic scifi playful], fill: ["#F4FF52", "#9BE564"], outlines: ["#0A0A0A", "#FF2E63", "#0A0A0A"], extrude: "#202020", shadow: "#000000", halftone: "#4C7A20", inline: "#FFFFFF"}
+  - {name: neon-night, moods: [comic scifi retro], fill: ["#FFFFFF", "#FF4FD8"], outlines: ["#7A00FF", "#00F0FF", "#0A0020"], extrude: "#0A0020", shadow: "#000000", halftone: "#4B0082", inline: "#FFE6FA"}
+  - {name: orange-crush, moods: [comic pulp playful], fill: ["#FFC94A", "#FF6A00"], outlines: ["#2B2B2B", "#FFFFFF", "#0057B8"], extrude: "#5A2600", shadow: "#1A0B00", halftone: "#A63F00", inline: "#FFF1CC"}
+  - {name: deep-sea, moods: [comic fantasy pulp], fill: ["#A8FFF2", "#00A6A6", "#00395A"], outlines: ["#00131F", "#F7D354", "#00131F"], extrude: "#00131F", shadow: "#000000", halftone: "#004A5A", inline: "#E8FFFB"}
+  - {name: monster-purple, moods: [comic horror playful], fill: ["#C3F73A", "#6EBE2C"], outlines: ["#3F0071", "#FB8500", "#000000"], extrude: "#20003A", shadow: "#000000", halftone: "#2D6B12", inline: "#F4FFD6"}
+  - {name: patriot, moods: [comic pulp], fill: ["#FFFFFF", "#D9E4F5"], outlines: ["#B22234", "#0A3161", "#FFFFFF"], extrude: "#0A3161", shadow: "#000814", halftone: "#3C5A99", inline: "#FFFFFF"}
+  - {name: rust-iron, moods: [comic pulp scifi western], fill: ["#F4A259", "#BC4B21", "#5B1A08"], outlines: ["#1E1E1E", "#F2E8CF"], extrude: "#2A0E04", shadow: "#000000", halftone: "#5B1A08", inline: "#FFE0C2"}
+  - {name: chrome, moods: [comic scifi retro], fill: ["#FFFFFF", "#9AA5B1", "#F0F4F8"], outlines: ["#1F2933", "#E12D39", "#1F2933"], extrude: "#323F4B", shadow: "#000000", halftone: "#52606D", inline: "#FFFFFF"}
+
+novel:
+  - {name: antique-gold, moods: [novel elegant fantasy], fill: ["#FBE7A1", "#C9A227", "#7A5C12"], outlines: ["#3A2A06"], extrude: "#2A1E04", shadow: "#120C02", halftone: "#7A5C12", inline: "#FFF8DC"}
+  - {name: silver-foil, moods: [novel elegant scifi], fill: ["#FFFFFF", "#B8C2CC", "#EEF2F5"], outlines: ["#2E3A46"], extrude: "#1C252E", shadow: "#0A0E12", halftone: "#6B7785", inline: "#FFFFFF"}
+  - {name: ivory, moods: [novel elegant], fill: ["#FFFDF5", "#F1E9D2"], outlines: ["#3B3024"], extrude: "#2A2219", shadow: "#140F0A", halftone: "#8A7B66", inline: "#FFFFFF"}
+  - {name: crimson-gothic, moods: [novel horror], fill: ["#E5383B", "#8B0000", "#3D0000"], outlines: ["#0B0B0B"], extrude: "#1A0000", shadow: "#000000", halftone: "#3D0000", inline: "#FFB3B3"}
+  - {name: bone, moods: [novel horror], fill: ["#EDE6D6", "#BDB29C"], outlines: ["#1A1612"], extrude: "#0D0B09", shadow: "#000000", halftone: "#6E6553", inline: "#FFFFFF"}
+  - {name: midnight, moods: [novel horror fantasy], fill: ["#DCE3F2", "#7A8BB5", "#2A3557"], outlines: ["#0A0F1F"], extrude: "#050812", shadow: "#000000", halftone: "#2A3557", inline: "#FFFFFF"}
+  - {name: emerald, moods: [novel fantasy elegant], fill: ["#C8F2D4", "#2E8B57", "#0F3D25"], outlines: ["#E8D27A"], extrude: "#071F13", shadow: "#000000", halftone: "#0F3D25", inline: "#F0FFF4"}
+  - {name: rose-romance, moods: [novel elegant], fill: ["#FFE4EC", "#E8798F", "#9E2A4B"], outlines: ["#4A0E22"], extrude: "#2A0713", shadow: "#140309", halftone: "#9E2A4B", inline: "#FFFFFF"}
+  - {name: parchment, moods: [novel fantasy retro], fill: ["#F3E3B5", "#D4B783"], outlines: ["#4B3619"], extrude: "#2E200D", shadow: "#140D04", halftone: "#7A5A2E", inline: "#FFF8E5"}
+  - {name: copper, moods: [novel retro western], fill: ["#F7C59F", "#C46A2C", "#6E3210"], outlines: ["#2A1105"], extrude: "#1A0A03", shadow: "#000000", halftone: "#6E3210", inline: "#FFE8D6"}
+  - {name: ink-black, moods: [novel pulp elegant], fill: ["#1A1A1A", "#000000"], outlines: ["#F5F0E6"], extrude: "#7A7A7A", shadow: "#9A9A9A", halftone: "#4A4A4A", inline: "#5A5A5A"}
+  - {name: noir-white, moods: [novel pulp], fill: ["#FFFFFF", "#E0E0E0"], outlines: ["#111111"], extrude: "#111111", shadow: "#000000", halftone: "#555555", inline: "#FFFFFF"}
+  - {name: pulp-yellow, moods: [novel pulp retro], fill: ["#FFE45C", "#F2B705"], outlines: ["#1A1A1A"], extrude: "#7A1F1F", shadow: "#000000", halftone: "#A67C00", inline: "#FFF7C2"}
+  - {name: sea-mist, moods: [novel fantasy], fill: ["#E0F7F7", "#7FC8C8", "#2F6F7A"], outlines: ["#0E2A30"], extrude: "#071519", shadow: "#000000", halftone: "#2F6F7A", inline: "#FFFFFF"}
+  - {name: violet-dusk, moods: [novel fantasy elegant], fill: ["#F0E1FF", "#A77BCA", "#4B2C6B"], outlines: ["#1E0F2E"], extrude: "#120820", shadow: "#000000", halftone: "#4B2C6B", inline: "#FFFFFF"}
+  - {name: ember, moods: [novel fantasy horror], fill: ["#FFE29A", "#FF8C42", "#B23A0E"], outlines: ["#2A0A00"], extrude: "#1A0600", shadow: "#000000", halftone: "#B23A0E", inline: "#FFF4D6"}
+  - {name: starfield, moods: [novel scifi], fill: ["#FFFFFF", "#9AD1FF", "#3A6EA5"], outlines: ["#0A1A2F"], extrude: "#050D18", shadow: "#000000", halftone: "#3A6EA5", inline: "#FFFFFF"}
+  - {name: mars-dust, moods: [novel scifi western], fill: ["#FFD3B0", "#E07A3F", "#8A3B12"], outlines: ["#2A0F04"], extrude: "#180802", shadow: "#000000", halftone: "#8A3B12", inline: "#FFF0E5"}
+  - {name: sage, moods: [novel elegant], fill: ["#EEF3E2", "#A3B18A", "#588157"], outlines: ["#1F2A1C"], extrude: "#10160E", shadow: "#000000", halftone: "#3A5A40", inline: "#FFFFFF"}
+  - {name: sepia, moods: [novel retro western pulp], fill: ["#F4E1C1", "#C19A6B", "#704214"], outlines: ["#2B1A08"], extrude: "#1A0F05", shadow: "#000000", halftone: "#704214", inline: "#FFF6E8"}

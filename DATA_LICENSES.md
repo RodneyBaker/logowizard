@@ -14,6 +14,18 @@ Every text source and font used to build training data is listed here.
 
 ## Fonts
 
-Recorded per font in `data/fonts/manifest.csv` (family, license, source URL, sha256). Only SIL OFL 1.1, Apache 2.0 and Ubuntu Font License fonts are accepted.
+264 families (356 faces) from the Google Fonts repository, https://github.com/google/fonts. The curated list and its style tags are in `src/logo_wizard/fonts/catalog.py`; `logo-wizard-fonts` downloads them into `local/fonts/` (not committed) together with each family's license file, and writes `data/fonts/manifest.csv` with family, file, license, source URL and sha256 for every face.
 
-The exact download URLs live in `src/logo_wizard/corpus/sources.py`.
+| License | Faces |
+| --- | --- |
+| SIL Open Font License 1.1 | 324 |
+| Apache License 2.0 | 27 |
+| Ubuntu Font License 1.0 | 5 |
+
+Only the `ofl/`, `apache/` and `ufl/` folders are used, and the license named in each family's METADATA.pb must match its folder. These licenses allow use and redistribution, and images drawn with the fonts carry no font-license obligations.
+
+## Palettes
+
+`data/palettes/palettes.yaml` is original to this project.
+
+The exact text download URLs live in `src/logo_wizard/corpus/sources.py`.

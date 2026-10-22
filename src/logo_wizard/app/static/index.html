@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo Wizard</title>
+<style>
+  :root { --bg: #f4f5f7; --panel: #ffffff; --ink: #1c1f26; --muted: #5d6472; --line: #d9dce3; --accent: #d7261e; --tile: #e6e8ec; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #15171c; --panel: #1e2128; --ink: #eceef2; --muted: #9aa1ad; --line: #30343d; --tile: #2a2e36; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, "Segoe UI", sans-serif; background: var(--bg); color: var(--ink); }
+  header { padding: 18px 24px 6px; }
+  h1 { margin: 0; font-size: 22px; letter-spacing: .02em; }
+  header p { margin: 2px 0 0; color: var(--muted); }
+  form { display: grid; grid-template-columns: 2fr 1fr 1fr auto auto; gap: 10px; padding: 14px 24px; align-items: end; }
+  label { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+  input, select, button { font: inherit; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); }
+  button { cursor: pointer; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  #status { padding: 0 24px; color: var(--muted); min-height: 1.4em; }
+  #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; padding: 14px 24px 40px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .card .art { aspect-ratio: 512 / 320; background: var(--tile); display: grid; place-items: center; }
+  .card.dark .art { background: #262a33; }
+  .card img { width: 100%; height: 100%; object-fit: contain; }
+  .card .bar { display: flex; gap: 6px; padding: 8px; align-items: center; flex-wrap: wrap; }
+  .card .bar span { color: var(--muted); font-size: 12px; flex: 1 1 100%; }
+  .card .bar button { padding: 5px 9px; font-size: 13px; }
+  @media (max-width: 720px) { form { grid-template-columns: 1fr 1fr; } form label:first-child { grid-column: 1 / -1; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Logo Wizard</h1>
+  <p>Comic book and novel cover title logos, made on this computer.</p>
+</header>
+<form id="form">
+  <label>Title <input id="text" required placeholder="The Iron Comet" autofocus></label>
+  <label>Style words <input id="words" placeholder="sci-fi, gothic, western..."></label>
+  <label>Subtitle or author <input id="subtitle" placeholder="optional"></label>
+  <label>Style
+    <select id="style"><option value="">Auto</option><option value="comic">Comic</option><option value="novel">Novel</option></select>
+  </label>
+  <button class="primary" type="submit">Generate</button>
+</form>
+<div id="status"></div>
+<div id="grid"></div>
+<script>
+const $ = (id) => document.getElementById(id);
+const describe = (s) => [s.font.replace(/-\d+$/, ''), s.palette, s.warp !== 'none' ? s.warp : s.arrangement].join(' · ');
+
+function lightLogo(img) {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 40;
+  const g = c.getContext('2d'); g.drawImage(img, 0, 0, 64, 40);
+  const d = g.getImageData(0, 0, 64, 40).data; let lum = 0, a = 0;
+  for (let i = 0; i < d.length; i += 4) { const w = d[i + 3] / 255; lum += w * (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255; a += w; }
+  return a > 0 && lum / a > 0.6;
+}
+
+async function download(spec, width, height) {
+  const res = await fetch('/api/render', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ spec, width, height }) });
+  if (!res.ok) { $('status').textContent = 'Export failed.'; return; }
+  const url = URL.createObjectURL(await res.blob());
+  const a = document.createElement('a');
+  a.href = url; a.download = spec.text.replace(/[^\w]+/g, '_').toLowerCase() + `_${width}.png`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function card(c) {
+  const el = document.createElement('div'); el.className = 'card';
+  const art = document.createElement('div'); art.className = 'art';
+  const img = new Image(); img.src = 'data:image/png;base64,' + c.png; img.alt = c.spec.text;
+  img.onload = () => { if (lightLogo(img)) el.classList.add('dark'); };
+  art.appendChild(img); el.appendChild(art);
+  const bar = document.createElement('div'); bar.className = 'bar';
+  const info = document.createElement('span'); info.textContent = describe(c.spec); bar.appendChild(info);
+  for (const [label, w, h] of [['PNG 1024', 1024, 640], ['PNG 2048', 2048, 1280]]) {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+    b.onclick = () => download(c.spec, w, h); bar.appendChild(b);
+  }
+  el.appendChild(bar);
+  return el;
+}
+
+$('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('status').textContent = 'Drawing...';
+  const body = { text: $('text').value, words: $('words').value, subtitle: $('subtitle').value, style: $('style').value || null, count: 12 };
+  const res = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!res.ok) { $('status').textContent = (await res.json()).detail || 'Something went wrong.'; return; }
+  const data = await res.json();
+  $('grid').replaceChildren(...data.candidates.map(card));
+  $('status').textContent = `${data.candidates.length} ${data.style} candidates`;
+});
+</script>
+</body>
+</html>

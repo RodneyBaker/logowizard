@@ -5,7 +5,6 @@ description = "Local text-to-title-logo generator trained on synthetic data"
 requires-python = ">=3.11"
 dependencies = [
     "uharfbuzz",
-    "freetype-py",
     "skia-python",
     "pillow",
     "numpy",
@@ -15,10 +14,13 @@ dependencies = [
 [project.optional-dependencies]
 train = ["torch", "pytesseract"]
 app = ["fastapi", "uvicorn", "onnxruntime"]
-dev = ["pytest"]
+dev = ["pytest", "httpx"]
 
 [project.scripts]
 logo-wizard-corpus = "logo_wizard.corpus.build:main"
+logo-wizard-fonts = "logo_wizard.fonts.fetch:main"
+logo-wizard-render = "logo_wizard.render.cli:main"
+logo-wizard-app = "logo_wizard.app.server:main"
 
 [build-system]
 requires = ["hatchling"]
