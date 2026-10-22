@@ -24,6 +24,8 @@ logo-wizard-app = "logo_wizard.app.server:main"
 logo-wizard-synth = "logo_wizard.synth.generate:main"
 logo-wizard-train-layout = "logo_wizard.train.layout:main"
 logo-wizard-layout-compare = "logo_wizard.train.compare_layout:main"
+logo-wizard-train-stylizer = "logo_wizard.train.stylizer:main"
+logo-wizard-eval-stylizer = "logo_wizard.train.eval_stylizer:main"
 
 [build-system]
 requires = ["hatchling"]

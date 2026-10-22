@@ -67,3 +67,16 @@ logo-wizard-layout-compare --score A,B,A,...  # your picks, one per row
 ```
 
 The model reads the style words and the title as characters and writes the spec one field at a time (style, font, palette, case, arrangement, warp, effects...). At each step it can only choose that field's values, so every output is a valid spec, and fonts or palettes missing on the machine are never proposed. Checkpoints and `log.csv` (loss and per-field accuracy each epoch) go to `local/runs/layout/`; the app loads `best.pt`. Training runs in fp32; the training loop saves on Ctrl+C.
+
+## Stylizer (milestone 5)
+
+A 35M parameter pixel-space diffusion UNet that paints the finished logo around the plain glyph mask, conditioned on the spec's look (style, palette, fill, texture, halftone, outlines, inline, 3D). It trains at 128x80 in fp32 with gradient checkpointing, which keeps batch 16 inside the GTX 1080's 8 GB.
+
+```
+logo-wizard-train-stylizer --max-minutes 480     # one overnight session; run again to continue
+logo-wizard-eval-stylizer --n 200                # OCR readability of stylized output vs the renderer
+```
+
+Every 2,000 steps it saves `local/runs/stylizer/last.pt` (full state) and `ema.pt` (the smoothed weights the app uses); every 10,000 steps it writes `preview_<step>.png` with mask, stylized and target columns. `log.csv` records loss, samples per second and peak VRAM, which gives the measured hardware numbers for the plan. The milestone is done when `eval.json` shows `stylized_readable` above 0.95 and the sheet looks richer than the plain fill. For the 256x160 stretch goal: `--size 256x160 --batch-size 6 --run local/runs/stylizer-256`.
+
+At export the stylizer output is upscaled with a light sharpen, and letter interiors are re-cut from a full-size glyph mask so the shapes stay crisp.
